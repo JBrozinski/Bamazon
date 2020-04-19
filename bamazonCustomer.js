@@ -30,31 +30,83 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
   if (err) throw err;
   queryAllItems();
-  //   start();
 });
 //item_id, product_name, department, price, stock_quantity
 function queryAllItems() {
   connection.query("SELECT * FROM products", function (err, res) {
     if (err) throw err;
-    for (var i = 0; i < res.length; i++) {
-      console.log(
-        res[i].item_id +
-          " | " +
-          res[i].product_name +
-          " | " +
-          res[i].department +
-          " | " +
-          res[i].price +
-          " | " +
-          res[i].stock_quantity
-      );
-    }
-    console.log("successfully quried products");
+    // for (var i = 0; i < res.length; i++) {
+    //   console.log(
+    //     res[i].item_id +
+    //       " | " +
+    //       res[i].product_name +
+    //       " | " +
+    //       res[i].department +
+    //       " | " +
+    //       res[i].price +
+    //       " | " +
+    //       res[i].stock_quantity
+    //   );
+    // }
+    // console.log("successfully quried products");
+    console.table(res);
+    start(res);
   });
 }
 
-// function start() {
-//     inquirer
-//       .prompt({
+function start(db) {
+  var choices = [];
+  for (var i = 0; i < db.length; i++) {
+    var item = {
+      name: db[i].product_name,
+      value: db[i].item_id,
+    };
+    choices.push(item);
+  }
+  //   const choices = db.map((x) => ({ name: x.product_name, value: x.item_id }));
 
-//       })
+  inquirer
+    .prompt({
+      name: "id",
+      type: "list",
+      message: "What item would you like?",
+      // choices: choices,
+      choices,
+    })
+    .then(function (answers) {
+      var item;
+      for (var i = 0; i < db.length; i++) {
+        if (db[i].item_id === answers.id) {
+          item = db[i];
+        }
+      }
+      console.log(item);
+      //   const item = db.find((x) => x.item_id === answers.id);
+
+      inquirer
+        .prompt({
+          name: "quantity",
+          type: "input",
+          message: "How Many would you like?",
+          validate: function (val) {
+            return parseInt(val) < item.stock_quantity;
+          },
+        })
+        .then(function (answers) {
+          var new_quantity = item.stock_quantity - parseInt(answers.quantity);
+          updateStock(new_quantity, item.item_id);
+        });
+    });
+}
+
+function updateStock(number, id) {
+  var SQL = "UPDATE products ";
+  SQL += "SET stock_quantity = ? ";
+  SQL += "WHERE item_id = ?";
+
+  var data = [number, id];
+  connection.query(SQL, data, function (err, res) {
+    if (err) throw err;
+    queryAllItems();
+  });
+}
