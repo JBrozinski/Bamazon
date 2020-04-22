@@ -80,8 +80,6 @@ function start(db) {
           item = db[i];
         }
       }
-      console.log(item);
-      //   const item = db.find((x) => x.item_id === answers.id);
 
       inquirer
         .prompt({
