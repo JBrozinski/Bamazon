@@ -90,8 +90,10 @@ function start(db) {
             return parseInt(val) < item.stock_quantity;
           },
         })
+
         .then(function (answers) {
           var new_quantity = item.stock_quantity - parseInt(answers.quantity);
+          console.log(answers.quantity * parseInt(answers.price));
           updateStock(new_quantity, item.item_id);
         });
     });
@@ -105,6 +107,7 @@ function updateStock(number, id) {
   var data = [number, id];
   connection.query(SQL, data, function (err, res) {
     if (err) throw err;
+    console.log("NEW TOTAL = $");
     queryAllItems();
   });
 }
