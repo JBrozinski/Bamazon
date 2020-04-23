@@ -78,7 +78,8 @@ function start(db) {
 
         .then(function (answers) {
           var new_quantity = item.stock_quantity - parseInt(answers.quantity);
-          console.log(answers.quantity * parseInt(answers.price));
+          console.log(answers.quantity);
+          console.log(answers.quantity * parseInt(item.price));
           updateStock(new_quantity, item.item_id);
         });
     });
