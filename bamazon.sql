@@ -10,7 +10,8 @@ product_name varchar
     (100),
 department varchar
     (100),
-price decimal,
+price decimal
+    (10,2),
 stock_quantity integer,
 primary key
     (item_id)

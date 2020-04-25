@@ -48,7 +48,6 @@ function start(db) {
     };
     choices.push(item);
   }
-  //   const choices = db.map((x) => ({ name: x.product_name, value: x.item_id }));
 
   inquirer
     .prompt({
@@ -77,10 +76,13 @@ function start(db) {
         })
 
         .then(function (answers) {
-          var new_quantity = item.stock_quantity - parseInt(answers.quantity);
+          var new_quantity = item.stock_quantity - parseFloat(answers.quantity);
           // console.log(answers.quantity);
-          console.log("NEW TOTAL = $", answers.quantity * parseInt(item.price));
           updateStock(new_quantity, item.item_id);
+          console.log(
+            "NEW TOTAL = $",
+            (answers.quantity * parseFloat(item.price)).toFixed(2)
+          );
         });
     });
 }
@@ -94,6 +96,6 @@ function updateStock(number, id) {
   connection.query(SQL, data, function (err, res) {
     if (err) throw err;
 
-    queryAllItems();
+    // queryAllItems();
   });
 }
