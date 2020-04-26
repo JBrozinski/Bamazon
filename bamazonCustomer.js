@@ -96,6 +96,6 @@ function updateStock(number, id) {
   connection.query(SQL, data, function (err, res) {
     if (err) throw err;
 
-    // queryAllItems();
+    queryAllItems();
   });
 }
